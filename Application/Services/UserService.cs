@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services;
 
-public class UserService(DatabaseContext context) : IUserService
+public class UserService(DatabaseContext context, DapperDbContext dapperContext) : IUserService
 {
     public async Task<IEnumerable<AppUser>> GetUsers()
     {

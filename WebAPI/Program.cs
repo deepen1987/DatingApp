@@ -16,6 +16,8 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddScoped<DapperDbContext>();
+
 builder.Services.AddScoped<IUserService, UserService>();
 
 
