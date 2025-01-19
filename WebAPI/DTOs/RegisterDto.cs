@@ -4,8 +4,9 @@ namespace WebAPI.DTOs;
 
 public class RegisterDto
 {
-    [Required]
-    public required string Username { get; set; }
-    [Required]
-    public required string Password { get; set; }
+    [Required (ErrorMessage = "Email is required")] 
+    public string Username { get; set; } = string.Empty;
+    [Required] 
+    [StringLength(8, MinimumLength = 4, ErrorMessage = "Password must be between 4 and 8 characters")]
+    public string Password { get; set; } = string.Empty;
 }
