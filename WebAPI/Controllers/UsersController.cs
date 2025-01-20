@@ -1,25 +1,28 @@
 using Application.Interfaces;
-using Domain.Entities;
+using AutoMapper;
+using Infrastructure.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers;
 
+[Authorize]
 public class UsersController(IUserService userService) : CustomControllerBase
 {
-    [AllowAnonymous]
     [HttpGet]
-    public ActionResult<IEnumerable<AppUser>> GetUsers()
+    public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
     {
-        return Ok(userService.GetUsers());
+        var users = await userService.GetUsersAsync();
+        
+        return Ok(users);
     }
     
-    [Authorize]
-    [HttpGet("{id}")]
-    public ActionResult<AppUser> GetUser(int id)
+    [HttpGet("{username}")]
+    public async Task<ActionResult<MemberDto>> GetUser(string username)
     {
-        var user = userService.GetUserById(id);
+        var user = await userService.GetUserByUsernameAsync(username);
         if(user == null) return NotFound();
+        
         return Ok(user);
     }
 }

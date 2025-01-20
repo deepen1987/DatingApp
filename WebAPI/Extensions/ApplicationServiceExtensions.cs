@@ -1,6 +1,7 @@
 using Application.Interfaces;
 using Application.Services;
 using Infrastructure.DataContext;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Extensions;
@@ -25,6 +26,10 @@ public static class ApplicationServiceExtensions
 
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITokenService, TokenService>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        
+        //Try to understand a little more about AutoMapper
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         
         return services;
     }

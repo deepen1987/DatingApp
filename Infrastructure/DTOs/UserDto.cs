@@ -1,4 +1,4 @@
-namespace WebAPI.DTOs;
+namespace Infrastructure.DTOs;
 
 public class UserDto
 {

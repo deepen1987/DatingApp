@@ -1,3 +1,6 @@
+using Infrastructure.DataContext;
+using Infrastructure.SeedData;
+using Microsoft.EntityFrameworkCore;
 using WebAPI.Extensions;
 using WebAPI.Middleware;
 
@@ -26,5 +29,21 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+try
+{
+    var context = services.GetRequiredService<DatabaseContext>();
+    await context.Database.MigrateAsync();
+    await Seed.SeedUsers(context);
+}
+catch (Exception e)
+{
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(e, e.Message);
+    Console.WriteLine(e);
+    throw;
+}
 
 app.Run();

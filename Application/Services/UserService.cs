@@ -1,21 +1,23 @@
 using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.DataContext;
+using Infrastructure.DTOs;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services;
 
-public class UserService(DatabaseContext context, DapperDbContext dapperContext) : IUserService
+public class UserService(IUserRepository userRepository, DapperDbContext dapperContext) : IUserService
 {
-    public async Task<IEnumerable<AppUser>> GetUsers()
+    public async Task<IEnumerable<MemberDto>> GetUsersAsync()
     {
-        var users = await context.Users.ToListAsync();
+        var users = await userRepository.GetMembersAsync();
         return users;
     }
 
-    public async Task<AppUser> GetUserById(int id)
+    public async Task<MemberDto> GetUserByUsernameAsync(string username)
     {
-        var user = await context.Users.FindAsync(id);
+        var user = await userRepository.GetMemberAsync(username);
         
         return user;
     }
