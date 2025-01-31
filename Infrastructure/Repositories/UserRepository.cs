@@ -51,4 +51,16 @@ public class UserRepository(DatabaseContext context, IMapper mapper) : IUserRepo
             .ProjectTo<MemberDto>(mapper.ConfigurationProvider)
             .SingleOrDefaultAsync();
     }
+
+    public async Task<AppUser> UpdateUserAsync(string username,MemberUpdateDTO  memberUpdateDto)
+    {
+        var user = await GetUserByUsernameAsync(username);
+        if (user == null) return null;
+        
+        mapper.Map(memberUpdateDto, user);
+        
+        if(await SaveAllAsync()) return user;
+        
+        return null;
+    }
 }

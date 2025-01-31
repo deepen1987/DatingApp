@@ -12,4 +12,5 @@ public interface IUserRepository
     Task<AppUser?> GetUserByUsernameAsync(string username);
     Task<IEnumerable<MemberDto>> GetMembersAsync();
     Task<MemberDto?> GetMemberAsync(string username);
+    public Task<AppUser> UpdateUserAsync(string username,MemberUpdateDTO  memberUpdateDto);
 }

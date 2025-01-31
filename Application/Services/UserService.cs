@@ -21,4 +21,10 @@ public class UserService(IUserRepository userRepository, DapperDbContext dapperC
         
         return user;
     }
+
+    public async Task<AppUser> UpdateUserAsync(string username, MemberUpdateDTO  memberUpdateDto)
+    {
+        var user = await userRepository.UpdateUserAsync(username, memberUpdateDto);
+        return user;
+    }
 }
