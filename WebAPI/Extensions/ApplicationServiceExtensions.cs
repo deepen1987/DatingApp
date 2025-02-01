@@ -1,8 +1,9 @@
-using Application.Interfaces;
-using Application.Services;
 using Infrastructure.DataContext;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using WebAPI.Helpers;
+using WebAPI.Interfaces;
+using WebAPI.Services;
 
 namespace WebAPI.Extensions;
 
@@ -27,9 +28,11 @@ public static class ApplicationServiceExtensions
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IPhotoService, PhotoService>();
         
         //Try to understand a little more about AutoMapper
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
         
         return services;
     }

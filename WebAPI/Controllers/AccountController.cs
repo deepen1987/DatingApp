@@ -1,12 +1,11 @@
 using System.Security.Cryptography;
 using System.Text;
-using Application.Interfaces;
-using Domain.Entities;
 using Infrastructure.DataContext;
 using Infrastructure.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebAPI.Interfaces;
 
 namespace WebAPI.Controllers;
 
@@ -19,31 +18,15 @@ public class AccountController(DatabaseContext context, ITokenService tokenServi
         if (await UserExists(registerDto.Username)) return BadRequest("Username is taken");
 
         return Ok();
-        // using var hmac = new HMACSHA512();
-        //
-        // var user = new AppUser()
-        // {
-        //     UserName = registerDto.Username.ToLower(),
-        //     PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-        //     PasswordSalt = hmac.Key
-        // };
-        //
-        // context.Users.Add(user);
-        // await context.SaveChangesAsync();
-        //
-        // var userDto = new UserDto()
-        // {
-        //     Username = user.UserName,
-        //     Token = tokenService.CreateToken(user)
-        // };
-        // return userDto;
     }
 
     [AllowAnonymous]
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
-        var user = await context.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
+        var user = await context.Users
+            .Include(appUser => appUser.Photos)
+            .FirstOrDefaultAsync(x => x.UserName == loginDto.Username.ToLower());
 
         if(user == null) return Unauthorized("Invalid username");
 
@@ -59,7 +42,8 @@ public class AccountController(DatabaseContext context, ITokenService tokenServi
         var userDto = new UserDto()
         {
             Username = user.UserName,
-            Token = tokenService.CreateToken(user)
+            Token = tokenService.CreateToken(user),
+            PhotoUrl = user.Photos.FirstOrDefault(p => p.IsMain)?.Url
         };
         return Ok(userDto);
     }

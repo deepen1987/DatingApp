@@ -13,4 +13,5 @@ public interface IUserRepository
     Task<IEnumerable<MemberDto>> GetMembersAsync();
     Task<MemberDto?> GetMemberAsync(string username);
     public Task<AppUser> UpdateUserAsync(string username,MemberUpdateDTO  memberUpdateDto);
+    public Task<bool> SaveAllAsyncMember(MemberDto memberDto);
 }

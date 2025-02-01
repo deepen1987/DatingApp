@@ -52,7 +52,7 @@ public class UserRepository(DatabaseContext context, IMapper mapper) : IUserRepo
             .SingleOrDefaultAsync();
     }
 
-    public async Task<AppUser> UpdateUserAsync(string username,MemberUpdateDTO  memberUpdateDto)
+    public async Task<AppUser?> UpdateUserAsync(string username,MemberUpdateDTO  memberUpdateDto)
     {
         var user = await GetUserByUsernameAsync(username);
         if (user == null) return null;
@@ -62,5 +62,15 @@ public class UserRepository(DatabaseContext context, IMapper mapper) : IUserRepo
         if(await SaveAllAsync()) return user;
         
         return null;
+    }
+    
+    public async Task<bool> SaveAllAsyncMember(MemberDto memberDto)
+    {
+        var user = await GetUserByUsernameAsync(memberDto.Username);
+        if (user == null) return false;
+        
+        mapper.Map(memberDto, user);
+        
+        return await SaveAllAsync();
     }
 }
